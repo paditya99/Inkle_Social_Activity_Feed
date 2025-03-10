@@ -1,1 +1,1 @@
-# Springboot_Social_Activity_Feed
+# Social_Activity_Feed
