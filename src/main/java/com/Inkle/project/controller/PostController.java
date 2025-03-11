@@ -2,6 +2,8 @@ package com.Inkle.project.controller;
 
 import com.Inkle.project.dto.PostRequest;
 import com.Inkle.project.dto.PostResponse;
+import com.Inkle.project.entity.Post;
+
 import com.Inkle.project.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +25,10 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<PostResponse> createPost(
-            @RequestBody PostRequest request,
-            @AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.ok(postService.createPost(request, userDetails.getUsername()));
+    public ResponseEntity<PostResponse> createPost(@RequestBody PostRequest request, @AuthenticationPrincipal UserDetails userDetails) {
+    	System.out.print("username in PostController= "+userDetails.getUsername());
+        PostResponse createdPost = postService.createPost(request, userDetails.getUsername());
+        return ResponseEntity.ok(createdPost);
     }
 
     @PostMapping("/{postId}/like")
@@ -36,17 +38,22 @@ public class PostController {
         return ResponseEntity.ok(postService.likePost(postId, userDetails.getUsername()));
     }
 
+    @PostMapping("/{postId}/unlike")
+    public ResponseEntity<PostResponse> unlikePost(
+            @PathVariable Long postId,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(postService.unlikePost(postId, userDetails.getUsername()));
+    }
+
     @GetMapping("/feed")
     public ResponseEntity<List<PostResponse>> getFeed(
-            @AuthenticationPrincipal UserDetails userDetails) {
+    		@AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(postService.getFeed(userDetails.getUsername()));
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<Void> deletePost(
-            @PathVariable Long postId,
-            @AuthenticationPrincipal UserDetails userDetails) {
-        postService.deletePost(postId, userDetails.getUsername());
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> deletePost(@PathVariable Long postId) {
+        postService.deletePost(postId);
+        return ResponseEntity.ok("Post deleted successfully");
     }
 } 

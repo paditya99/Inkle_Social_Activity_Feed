@@ -54,7 +54,13 @@ public class AuthenticationService {
             user.setUsername(request.getUsername());
             user.setEmail(request.getEmail());
             user.setPassword(passwordEncoder.encode(request.getPassword()));
-            user.setRole(UserRole.USER);
+            
+            // Check if this is the first user (will be the owner)
+            if (userRepository.count() == 0) {
+                user.setRole(UserRole.OWNER);
+            } else {
+                user.setRole(UserRole.USER);
+            }
             
             logger.debug("Saving new user to database: {}", request.getUsername());
             userRepository.save(user);

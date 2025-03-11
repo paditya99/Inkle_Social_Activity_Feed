@@ -32,11 +32,17 @@ public class PostService {
 
     @Transactional
     public PostResponse createPost(PostRequest request, String username) {
+        if (request.getContent() == null || request.getContent().trim().isEmpty()) {
+            throw new IllegalArgumentException("Post content cannot be empty");
+        }
+        
+        System.out.print("username in createPost method= "+username);
+
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         Post post = new Post();
-        post.setContent(request.getContent());
+        post.setContent(request.getContent().trim());
         post.setUser(user);
 
         Post savedPost = postRepository.save(post);
@@ -54,12 +60,28 @@ public class PostService {
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 
         if (post.getLikes().contains(user)) {
-            post.getLikes().remove(user);
-        } else {
-            post.getLikes().add(user);
-            activityService.createActivity(user, "liked " + post.getUser().getUsername() + "'s post");
+            throw new IllegalArgumentException("You have already liked this post");
         }
 
+        post.getLikes().add(user);
+        activityService.createActivity(user, "liked " + post.getUser().getUsername() + "'s post");
+
+        return mapToPostResponse(postRepository.save(post), user);
+    }
+
+    @Transactional
+    public PostResponse unlikePost(Long postId, String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        if (!post.getLikes().contains(user)) {
+            throw new IllegalArgumentException("You haven't liked this post yet");
+        }
+
+        post.getLikes().remove(user);
         return mapToPostResponse(postRepository.save(post), user);
     }
 
@@ -85,19 +107,29 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Long postId, String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    public void deletePost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+        postRepository.delete(post);
+    }
 
+    @Transactional
+    public void clearLikes(Long postId, String adminUsername) {
+        // Verify admin exists
+        User admin = userRepository.findByUsername(adminUsername)
+                .orElseThrow(() -> new UsernameNotFoundException("Admin not found"));
+
+        // Get the post
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 
-        if (user.getRole().name().equals("OWNER") || 
-            user.getRole().name().equals("ADMIN") || 
-            post.getUser().equals(user)) {
-            postRepository.delete(post);
-        } else {
-            throw new RuntimeException("Not authorized to delete this post");
-        }
+        // Clear all likes
+        post.getLikes().clear();
+        
+        // Save the post
+        postRepository.save(post);
+        
+        // Create activity record
+        activityService.createActivity(admin, "cleared all likes from post by " + post.getUser().getUsername());
     }
 } 
