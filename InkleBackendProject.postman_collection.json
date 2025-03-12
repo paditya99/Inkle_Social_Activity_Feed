@@ -1,0 +1,557 @@
+{
+	"info": {
+		"_postman_id": "fe7ed691-efa4-49d9-afc8-7b68d22cc503",
+		"name": "InkleBackendProject",
+		"description": "StartFragment\n\n### Project Overview\n\nProject Name: Social Media Activity FeedDescription:The Social Media Activity Feed project is a backend application designed to facilitate user interactions in a social media environment. Built using Java, Spring Boot, and PostgreSQL, this application allows users to create profiles, manage posts, follow other users, and engage with content through likes and comments. The application also includes administrative functionalities for managing user roles and activities.\n\n### Key Features\n\nUser Management:\n\n- User Registration: Users can create their profiles by registering with a username, email, and password.\n    \n- User Login: Users can log in to their accounts to access the application.\n    \n- Profile Management: Users can view and update their profile information.\n    \n\nPost Management:\n\n- Create Posts: Users can create posts to share updates, thoughts, or media with their followers.\n    \n- Like Posts: Users can like posts made by others, indicating their appreciation or interest.\n    \n- Delete Posts: Users can delete their own posts if they wish to remove them from the feed.\n    \n\nSocial Interactions:\n\n- Follow Users: Users can follow other users to see their activities and posts in their feed.\n    \n- Unfollow Users: Users can unfollow others if they no longer wish to see their updates.\n    \n- Block Users: Users can block other users, preventing them from seeing their posts and activities.\n    \n\nActivity Feed:\n\n- The application maintains an activity wall where users can see updates about their network, such as new posts, follows, and likes. For example:\n    \n- \"ABC made a post\"\n    \n- \"DEF followed ABC\"\n    \n- \"PQR liked ABC's post\"\n    \n\nAdmin and Owner Functionalities:\n\n- Admin Role: Admins can delete user profiles, likes, and posts, ensuring the platform remains clean and free of inappropriate content.\n    \n- Owner Role: The owner has all admin capabilities and can promote or demote other users to/from admin roles.\n    \n\n### API Endpoints\n\nHere’s a brief description of the API endpoints available in the application:\n\n#### User Management Endpoints\n\n- POST /api/users/register: Registers a new user with a username, email, and password.\n    \n- POST /api/auth/login: Authenticates a user and returns a JWT token for session management.\n    \n- POST /api/users/{userId}/follow: Allows the authenticated user to follow another user by their ID.\n    \n- POST /api/users/{userId}/block: Blocks a user, preventing them from seeing the authenticated user's posts.\n    \n- DELETE /api/users/{userId}: Deletes a user profile (admin functionality).\n    \n\n#### Post Management Endpoints\n\n- POST /api/posts: Creates a new post for the authenticated user.\n    \n- GET /api/posts: Retrieves all posts visible to the authenticated user, excluding posts from blocked users.\n    \n- POST /api/posts/{postId}/like: Likes a specific post by its ID.\n    \n- POST /api/posts/{postId}/unlike: Unlikes a specific post by its ID.\n    \n- DELETE /api/posts/{postId}: Deletes a specific post (admin functionality).\n    \n\n#### Admin Functionality Endpoints\n\n- POST /api/admin/users/{userId}/promote: Promotes a user to admin status.\n    \n- POST /api/admin/users/{userId}/demote: Demotes an admin back to a regular user.\n    \n- DELETE /api/admin/users/{userId}: Deletes a user profile (admin functionality).\n    \n- DELETE /api/admin/posts/{postId}: Deletes a specific post (admin functionality).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24949256"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"shubham\",\r\n    \"email\": \"shubham@gmail.com\",\r\n    \"password\": \"pass123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Registers a new user with a username, email, and password."
+					},
+					"response": []
+				},
+				{
+					"name": "Login user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"shubham\",\r\n    \"password\": \"pass123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Authenticates a user and returns a JWT token for session management.\n\nNOTE: Use this token only as Bearer Token in Authorization for further actions"
+					},
+					"response": []
+				}
+			],
+			"description": "This contains endpoints for SignUp and Login actions."
+		},
+		{
+			"name": "User Actions",
+			"item": [
+				{
+					"name": "Follow a user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZGl0eWEiLCJpYXQiOjE3NDE3MjA4NzUsImV4cCI6MTc0MTgwNzI3NX0.L_QBv_ApUtfd-Qmf376dUe8o7v--zexBq6SMhJF0Q6A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/users/2/follow",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"2",
+								"follow"
+							]
+						},
+						"description": "Allows the authenticated user to follow another user by their ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Unfollow a user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaHViaGFtIiwiaWF0IjoxNzQxNjkyMzg2LCJleHAiOjE3NDE3Nzg3ODZ9.PS3j8pXqMsdwzDY-yNGxrgOSEij929RBXpntPFp80SY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/users/1/unfollow",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"1",
+								"unfollow"
+							]
+						},
+						"description": "Allows the authenticated user to unfollow another user by their ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Block a user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZGl0eWEiLCJpYXQiOjE3NDE3MjA4NzUsImV4cCI6MTc0MTgwNzI3NX0.L_QBv_ApUtfd-Qmf376dUe8o7v--zexBq6SMhJF0Q6A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/users/2/block",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"2",
+								"block"
+							]
+						},
+						"description": "Blocks a user, preventing them from seeing the authenticated user's posts."
+					},
+					"response": []
+				},
+				{
+					"name": "Unblock a user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZGl0eWEiLCJpYXQiOjE3NDE2OTQzMzMsImV4cCI6MTc0MTc4MDczM30.tmVQCESsXP8BhVPv-FN177JnXRrGc8ZcudGOVmc4m0o",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/users/2/unblock",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"2",
+								"unblock"
+							]
+						},
+						"description": "Unblocks a blocked user, allowing to again seeing the user's posts."
+					},
+					"response": []
+				}
+			],
+			"description": "This contains endpoints for user related actions like\n\nFollow/Unfollow a user, Block/Unblock a user."
+		},
+		{
+			"name": "Post Actions",
+			"item": [
+				{
+					"name": "Create a post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZGl0eWEiLCJpYXQiOjE3NDE3MjA4NzUsImV4cCI6MTc0MTgwNzI3NX0.L_QBv_ApUtfd-Qmf376dUe8o7v--zexBq6SMhJF0Q6A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\": \"This is Aditya second post\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/posts",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"posts"
+							]
+						},
+						"description": "Creates a new post for the authenticated user."
+					},
+					"response": []
+				},
+				{
+					"name": "Like a post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZGl0eWEiLCJpYXQiOjE3NDE3MjA4NzUsImV4cCI6MTc0MTgwNzI3NX0.L_QBv_ApUtfd-Qmf376dUe8o7v--zexBq6SMhJF0Q6A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/posts/2/like",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"posts",
+								"2",
+								"like"
+							]
+						},
+						"description": "Likes a specific post by its ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Unlike a post",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/posts/1/like",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"posts",
+								"1",
+								"like"
+							]
+						},
+						"description": "Unlikes a specific post by its ID."
+					},
+					"response": []
+				}
+			],
+			"description": "This contains endpoints for Post related actions like  \nCreate a post, Like/Unlike a post"
+		},
+		{
+			"name": "Activity wall",
+			"item": [
+				{
+					"name": "Get Feed",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZGl0eWEiLCJpYXQiOjE3NDE3MjA4NzUsImV4cCI6MTc0MTgwNzI3NX0.L_QBv_ApUtfd-Qmf376dUe8o7v--zexBq6SMhJF0Q6A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/posts/feed",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"posts",
+								"feed"
+							]
+						},
+						"description": "Retrieves all posts visible to the authenticated user, excluding posts from blocked users."
+					},
+					"response": []
+				},
+				{
+					"name": "View Activity Feed",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZGl0eWEiLCJpYXQiOjE3NDE3MjA4NzUsImV4cCI6MTc0MTgwNzI3NX0.L_QBv_ApUtfd-Qmf376dUe8o7v--zexBq6SMhJF0Q6A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/activities",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"activities"
+							]
+						},
+						"description": "View all the activities done."
+					},
+					"response": []
+				}
+			],
+			"description": "This contains endpoints to see the Activity feed, to get the post feed"
+		},
+		{
+			"name": "Owner/Admin",
+			"item": [
+				{
+					"name": "Owner Promotes User to Admin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZGl0eWEiLCJpYXQiOjE3NDE3MTYyMTcsImV4cCI6MTc0MTgwMjYxN30.ddIip9KVCAA0ab_DvgougLreq6AlbTsS4Dg6FvJuSLY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/owner/admins/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"owner",
+								"admins",
+								"2"
+							]
+						},
+						"description": "Promotes a user to admin role"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Deletes a Post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaHViaGFtIiwiaWF0IjoxNzQxNzE2MjM0LCJleHAiOjE3NDE4MDI2MzR9.Q0POKNV1IwggUTT8W1t0JFXKx5uGg5nCwFMZO0Pv5ls",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/posts/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"posts",
+								"1"
+							]
+						},
+						"description": "Admin delete a specific post"
+					},
+					"response": []
+				},
+				{
+					"name": "Owner Removes Admin Role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJvd25lciIsImlhdCI6MTc0MTY5NzYzMCwiZXhwIjoxNzQxNzg0MDMwfQ.D1gTZHEd66diHE4wzShfahvvVWwdMX8sZgAxAltd17c",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/owner/admins/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"owner",
+								"admins",
+								"2"
+							]
+						},
+						"description": "Owner demotes the admin back to user role."
+					},
+					"response": []
+				},
+				{
+					"name": "Admin deletes a user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaHViaGFtIiwiaWF0IjoxNzQxNzE2MjM0LCJleHAiOjE3NDE4MDI2MzR9.Q0POKNV1IwggUTT8W1t0JFXKx5uGg5nCwFMZO0Pv5ls",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/users/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"users",
+								"2"
+							]
+						},
+						"description": "Admin deletes a user"
+					},
+					"response": []
+				}
+			],
+			"description": "This contains endpoints for Owner/Admin related actions. (By default, the first registered user is Owner).\n\nOwner can promote the other user to admin. Admin can delete user profiles/likes/posts."
+		},
+		{
+			"name": "Get all users",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaHViaGFtIiwiaWF0IjoxNzQxNzE4NDQyLCJleHAiOjE3NDE4MDQ4NDJ9.sqkBvDcDU3LEyJDn1JqEgOdQgDrgH91kUnTQsvhaOqM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"users"
+					]
+				},
+				"description": "Retrieves all the users."
+			},
+			"response": []
+		}
+	]
+}
